@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Happy Birthday Poster</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg1:#ffecd2;
+      --bg2:#fcb69f;
+      --accent:#ff4d6d;
+      --deep:#6a00f4;
+      --text:#2b2b2b;
+      --gold:#ffb703;
+      --white:#ffffff;
+    }
+
+    /* Reset + layout */
+    *{box-sizing:border-box}
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:"Poppins",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    }
+
+    .poster-wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    /* Poster (A4-ish ratio) */
+    .poster{
+      position:relative;
+      width:min(900px,92vw);
+      aspect-ratio:210 / 297; /* approximate A4 portrait */
+      background:
+        radial-gradient(1200px 800px at 0% 0%, rgba(255,255,255,.40), transparent 70%),
+        radial-gradient(1200px 800px at 100% 100%, rgba(255,255,255,.30), transparent 70%),
+        linear-gradient(180deg,#fffdf7,#ffe9e0 80%);
+      border-radius:24px;
+      box-shadow:0 30px 80px rgba(0,0,0,.18);
+      overflow:hidden;
+      padding:32px;
+    }
+
+    /* Confetti */
+    .confetti{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        radial-gradient(circle 4px at 12% 10%, #ff4d6d 96%, transparent 100%),
+        radial-gradient(circle 4px at 30% 20%, #6a00f4 96%, transparent 100%),
+        radial-gradient(circle 4px at 65% 7%, #00b4d8 96%, transparent 100%),
+        radial-gradient(circle 4px at 85% 18%, #ffb703 96%, transparent 100%),
+        radial-gradient(circle 4px at 15% 85%, #219ebc 96%, transparent 100%),
+        radial-gradient(circle 4px at 40% 92%, #ef476f 96%, transparent 100%),
+        radial-gradient(circle 4px at 75% 80%, #8338ec 96%, transparent 100%),
+        radial-gradient(circle 4px at 92% 60%, #06d6a0 96%, transparent 100%);
+      opacity:.75;
+    }
+
+    /* Header ribbon */
+    .ribbon{
+      position:relative;
+      margin:8px auto 0;
+      width:88%;
+      background:linear-gradient(90deg,#ff4d6d,#f77f00);
+      color:white;
+      text-align:center;
+      padding:18px 22px;
+      border-radius:16px;
+      box-shadow:0 12px 30px rgba(247,127,0,.35);
+      letter-spacing:.6px;
+    }
+    .ribbon h1{
+      margin:0;
+      font-weight:900;
+      font-size:clamp(28px,5vw,48px);
+      text-transform:uppercase;
+    }
+    .ribbon small{
+      display:block;
+      margin-top:6px;
+      font-weight:700;
+      opacity:.95;
+    }
+
+    /* Center content */
+    .content{
+      position:relative;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      padding:16px;
+      text-align:center;
+    }
+
+    .name{
+      font-size:clamp(28px,5.5vw,54px);
+      font-weight:900;
+      color:var(--deep);
+      text-shadow:0 2px 0 #fff, 0 6px 18px rgba(106,0,244,.18);
+    }
+
+    .tagline{
+      font-size:clamp(16px,2.6vw,22px);
+      font-weight:600;
+      color:#5b5b5b;
+    }
+
+    /* Date + venue strip */
+    .details{
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+    }
+    .badge{
+      background:linear-gradient(180deg,#ffffff,#f8f4ff);
+      border:2px dashed #d7c7ff;
+      color:#3f3f3f;
+      padding:10px 16px;
+      border-radius:12px;
+      font-weight:700;
+      box-shadow:0 8px 20px rgba(106,0,244,.12);
+    }
+
+    /* CTA */
+    .cta{
+      margin-top:16px;
+      display:inline-block;
+      background:linear-gradient(90deg,#6a00f4,#8338ec);
+      color:white;
+      text-decoration:none;
+      font-weight:800;
+      letter-spacing:.4px;
+      padding:12px 20px;
+      border-radius:999px;
+      box-shadow:0 12px 30px rgba(131,56,236,.35);
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    .cta:hover{ transform:translateY(-2px); box-shadow:0 16px 36px rgba(131,56,236,.45); }
+
+    /* Balloons */
+    .balloons{
+      position:absolute;
+      left:0; right:0; top:12%;
+      display:flex;
+      justify-content:space-between;
+      padding:0 36px;
+      pointer-events:none;
+    }
+    .balloon{
+      width:80px; height:110px;
+      border-radius:50% 50% 46% 46%;
+      position:relative;
+      box-shadow:inset 0 0 30px rgba(255,255,255,.6), 0 10px 30px rgba(0,0,0,.15);
+      animation:float 6s ease-in-out infinite;
+    }
+    .balloon::after{
+      content:"";
+      position:absolute;
+      bottom:-22px; left:50%;
+      width:2px; height:60px;
+      background:#999;
+      transform:translateX(-50%);
+    }
+    .b1{background:#ff4d6d; animation-delay:0s}
+    .b2{background:#00b4d8; animation-delay:.8s}
+    .b3{background:#8338ec; animation-delay:1.6s}
+    .b4{background:#06d6a0; animation-delay:2.4s}
+
+    @keyframes float{
+      0%,100%{ transform:translateY(0) }
+      50%{ transform:translateY(-14px) }
+    }
+
+    /* Footer note */
+    .footer{
+      position:absolute;
+      bottom:16px; left:0; right:0;
+      text-align:center;
+      font-size:14px;
+      color:#6f6f6f;
+    }
+
+    /* Print styles (A4) */
+    @media print{
+      body{ background:white }
+      .poster{
+        width:210mm; aspect-ratio:auto; height:297mm;
+        box-shadow:none; border:1px solid #eee;
+      }
+      .cta{ display:none }
+    }
+  </style>
+</head>
+<body>
+  <div class="poster-wrap">
+    <div class="poster">
+      <div class="confetti"></div>
+
+      <!-- Decorative balloons -->
+      <div class="balloons">
+        <div class="balloon b1"></div>
+        <div class="balloon b2"></div>
+        <div class="balloon b3"></div>
+        <div class="balloon b4"></div>
+      </div>
+
+      <!-- Title ribbon -->
+      <div class="ribbon">
+        <h1>Happy Birthday!</h1>
+        <small>Let’s celebrate with cake, music, and lots of love</small>
+      </div>
+
+      <!-- Main content -->
+<div class="content">
+  <!-- Inserted image -->
+  <img src="c:\Users\Hara prasad Padhi\Downloads\IMG-20251121-WA0020 (1).jpg" alt="Subham's Birthday Poster" style="width:100%; border-radius:16px; box-shadow:0 12px 30px rgba(0,0,0,.2);" />
+
+  <div class="name">subham’s 18th Birthday</div>
+  <div class="tagline"><p>Come for the party 🎉🎊🪄, stay for the memories.</p>
+  <p>Dear Brother And Sister 💓💑 Come To Celebrate The Beautyful Memories🎉🎊🪄.</p>
+  </div>
+
+  <div class="details">
+    <div class="badge">Mon, 1 Dec • 8:00 PM</div>
+    <div class="badge">Venue: My Home </div>
+    <div class="badge">Dress code: Any dress what u want/ what is ur favorite.</div>
+  </div>
+
+  <a class="cta" href="#rsvp">RSVP</a>
+</div>
+
+      <div class="footer">Bring your best smile. Confetti provided.</div>
+    </div>
+  </div>
+</body>
+</html>
